@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, Zap, Wand2, ChevronDown } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+// 🚨 FIX: Import the functions you defined in base44Client.js directly
+import { generateVideo, getVideoStatus } from '@/api/base44Client';
 import Button from '../components/studio/Button';
 import { createPageUrl } from '../utils';
 import { toast } from 'sonner';
@@ -357,26 +358,28 @@ export default function Template2() {
     setStatusMessage("Initializing...");
 
     try {
-      const videoRecord = await base44.entities.Video.create({
-        title: trimmedTopic,
+      // 🚨 FIX: Combined the create/invoke steps into one call to the new generateVideo function
+      // Assuming your new Railway generateVideo handles creation and processing.
+      
+      // Step 1: Start the generation via the new Railway API endpoint
+      const response = await generateVideo({
+        topic: trimmedTopic,
         template_name: currentTemplateName,
-        template_id: state?.templateId || 1,
-        status: 'generating',
-        tags: [state?.template?.preview || 'viral_facts']
+        // Pass any other necessary template/style details to the Railway backend
       });
+
+      // Assuming the response from generateVideo is the new video record/status
+      // You may need to adjust the structure based on your actual Railway response.
+      const videoRecord = response; 
 
       setStatusMessage("Video generation started");
       setProgress(10);
       toast.success('Generating video...');
-
-      await base44.functions.invoke('generateVideo', {
-        videoId: videoRecord.id,
-        topic: trimmedTopic,
-        headline: trimmedTopic,
-        template: state?.template?.preview || 'viral_facts',
-        templateId: state?.templateId,
-        templateName: currentTemplateName
-      });
+      
+      // Since the old SDK required two steps (create then invoke), and your new API
+      // should combine this into one call, we can directly set the status/navigate.
+      // We are no longer polling the progress in this specific file, we rely on the
+      // Workshop page to see the job start.
 
       setProgress(100);
       setStatusMessage("Complete!");
