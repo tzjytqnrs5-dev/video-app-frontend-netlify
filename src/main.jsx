@@ -8,21 +8,21 @@ import {
 import './index.css'
 
 // --- General Pages ---
-import Home from '@/pages/Home.jsx' // <-- Use Alias
-import NotFound from '@/pages/NotFound.jsx' // <-- Use Alias
+import Home from '@/pages/Home.jsx' 
+import NotFound from '@/pages/NotFound.jsx' // <-- RE-ADDED: Import the new component
 
 // --- Workshop Pages ---
-import Workshop from '@/pages/Workshop.jsx' // <-- Use Alias
-import Templates from '@/pages/Templates.jsx' // <-- Use Alias
-import Template2 from '@/pages/Template2.jsx' // <-- Use Alias
-import MyVideos from '@/pages/MyVideos.jsx' // <-- Use Alias (and new import)
+import Workshop from '@/pages/Workshop.jsx' 
+import Templates from '@/pages/Templates.jsx' 
+import Template2 from '@/pages/Template2.jsx' 
+import MyVideos from '@/pages/MyVideos.jsx' 
 
 // --- Main Router Definition ---
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
-    errorElement: <NotFound />,
+    errorElement: <NotFound />, // <-- RE-ADDED: Use the component for errors
   },
   {
     path: '/workshop',
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate to="/404" replace />,
+    element: <Navigate to="/404" replace />, 
   },
 ])
 
