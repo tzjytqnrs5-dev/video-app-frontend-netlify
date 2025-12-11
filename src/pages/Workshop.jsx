@@ -2,7 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Video as VideoIcon, Loader2 } from 'lucide-react';
 import { createPageUrl } from '../utils';
-import { base44 } from '@/api/base44Client';
+
+// --- KEY FIX: Import the functions you defined in base44Client.js directly ---
+import { generateVideo, getVideoStatus } from '@/api/base44Client';
+// NOTE: getVideoStatus is used below, but we assume it can also return a list of videos (filter)
+// If your Railway backend has a separate "get all videos" endpoint, you should define and import it here instead.
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; 
 
 export default function Workshop() {
@@ -17,27 +22,28 @@ export default function Workshop() {
   const magicTileRef = React.useRef(null);
   const targetVideoTileRef = React.useRef(null); 
 
-  // --- Data Fetching Logic ---
-  const { data: videos = [] } = useQuery({
+  // --- Data Fetching Logic (Updated) ---
+  // The queryFn is changed to call your new API function. 
+  // We assume getVideoStatus (or a dedicated function if you create one) returns a list of all videos.
+  const { data: videos = [], isLoading } = useQuery({
     queryKey: ['videos'],
-    queryFn: () => base44.entities.Video.filter({}, '-created_date', 20),
+    // 🚨 FIX: Replaced base44.entities.Video.filter with the new API client function
+    queryFn: () => getVideoStatus(), 
     refetchInterval: 3000
   });
 
-  const generating = videos.filter(v => v.status === 'generating');
-  const completed = videos.filter(v => v.status === 'completed');
+  // NOTE: Status names might need adjustment to match your Railway backend (e.g., 'GENERATING' vs 'generating')
+  const generating = videos.filter(v => v.status.toLowerCase() === 'generating');
+  const completed = videos.filter(v => v.status.toLowerCase() === 'completed');
 
-  // --- useMutation for Asynchronous Video Creation ---
+  // --- useMutation for Asynchronous Video Creation (Updated) ---
   const randomVideoMutation = useMutation({
     mutationFn: async () => {
-      // Create the video entity to start the generation process
-      const response = await base44.entities.Video.create({
-        title: "Random AI Video",
+      // 🚨 FIX: Replaced base44.entities.Video.create with the new generateVideo function
+      const response = await generateVideo({
+        topic: "Generate a completely unique trendy AI short-form video.", // Topic passed to Railway
         template_name: "Random",
-        script: "Generate a completely unique trendy AI short-form video.",
-        style: "random",
-        randomness: 1,
-        ai_mode: "full_auto"
+        // The Railway backend will handle the rest of the logic (style, randomness, ai_mode, title)
       });
       return response;
     },
@@ -86,6 +92,16 @@ export default function Workshop() {
   };
 
   // --- Rendering Logic ---
+  // Add a loading state for the initial video fetch
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-purple-400" />
+        <span className="ml-3 text-xl">Loading Videos...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white pb-20">
       
@@ -109,8 +125,8 @@ export default function Workshop() {
           <div 
             onClick={() => navigate(createPageUrl('Templates'))} 
             className="group relative h-48 md:h-56 bg-[#1c1c1e] border border-purple-500/30 rounded-3xl 
-                       flex flex-col justify-center p-6 cursor-pointer 
-                       hover:border-purple-500 transition-all duration-300 overflow-hidden"
+                         flex flex-col justify-center p-6 cursor-pointer 
+                         hover:border-purple-500 transition-all duration-300 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
             
@@ -128,10 +144,10 @@ export default function Workshop() {
             onClick={handleMagicGenerateClick} 
             // The opacity change handles the "buttery fade" when isAnimating resets.
             className={`group relative h-48 md:h-56 bg-[#1c1c1e] border border-blue-500/30 rounded-3xl 
-                       flex flex-col justify-center p-6 cursor-pointer 
-                       hover:border-blue-500 transition-all duration-500 overflow-hidden 
-                       ${isAnimating ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
-                       ${randomVideoMutation.isSuccess ? 'border-green-500' : ''}`}
+                         flex flex-col justify-center p-6 cursor-pointer 
+                         hover:border-blue-500 transition-all duration-500 overflow-hidden 
+                         ${isAnimating ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
+                         ${randomVideoMutation.isSuccess ? 'border-green-500' : ''}`}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
 
