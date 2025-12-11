@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 // NOTE: The real API client import is commented out or ignored for the temporary fix.
 // import { getVideoStatus } from '../api/base44Client'; 
 // import { generateVideo } from '../api/base44Client'; 
