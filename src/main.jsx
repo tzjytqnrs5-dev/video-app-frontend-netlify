@@ -8,14 +8,14 @@ import {
 import './index.css'
 
 // --- General Pages ---
-import Home from '@/pages/Home.jsx' // <-- Corrected path using alias
-import NotFound from '@/pages/NotFound.jsx' // <-- Corrected path using alias
+import Home from '@/pages/Home.jsx' // <-- Use Alias
+import NotFound from '@/pages/NotFound.jsx' // <-- Use Alias
 
 // --- Workshop Pages ---
-import Workshop from '@/pages/Workshop.jsx' // <-- Corrected path using alias
-import Templates from '@/pages/Templates.jsx' // <-- Corrected path using alias
-import Template2 from '@/pages/Template2.jsx' // <-- Corrected path using alias
-import MyVideos from '@/pages/MyVideos.jsx' // <-- Corrected path using alias (and new import)
+import Workshop from '@/pages/Workshop.jsx' // <-- Use Alias
+import Templates from '@/pages/Templates.jsx' // <-- Use Alias
+import Template2 from '@/pages/Template2.jsx' // <-- Use Alias
+import MyVideos from '@/pages/MyVideos.jsx' // <-- Use Alias (and new import)
 
 // --- Main Router Definition ---
 const router = createBrowserRouter([
