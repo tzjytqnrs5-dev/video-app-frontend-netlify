@@ -22,8 +22,6 @@ export default function Workshop() {
   const { data: videos = [], isLoading, isError } = useQuery({
     queryKey: ['videos'],
     queryFn: () => getVideoStatus(),
-    refetchInterval: 3000,
-    // 🚨 CHANGE 2: Limit retries to 2 (or 3 total attempts) for faster failure
     retry: 2
   });
 
