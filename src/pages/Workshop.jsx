@@ -1,31 +1,25 @@
+// src/pages/Workshop.jsx (Full Reversion)
+
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-// NOTE: The real API client import is commented out or ignored for the temporary fix.
-// import { getVideoStatus } from '../api/base44Client'; 
-// import { generateVideo } from '../api/base44Client'; 
+import { useQuery } from '@tanstack/react-query'; // KEEP THIS CORRECT IMPORT
+import { getVideoStatus } from '../api/base44Client'; 
+// import { generateVideo } from '../api/base44Client'; // Keep commented if not used here
 
-
-// 🎯 TEMPORARY HARDCODED DATA to bypass the failing API call (Step 83)
-const HARDCODED_VIDEOS = [
-    { id: '1', title: 'Test Video 1 (COMPLETED)', status: 'COMPLETED', videoUrl: 'https://example.com/video1.mp4' },
-    { id: '2', title: 'Test Video 2 (PENDING)', status: 'PENDING' },
-    { id: '3', title: 'Test Video 3 (ERROR)', status: 'ERROR' },
-];
 
 function Workshop() {
-    // 🚨 API BYPASS IMPLEMENTATION: 
-    // This replaces the actual useQuery call with hardcoded data to prove 
-    // that the API connection is the problem, not the frontend rendering logic.
-    const { data: videos = HARDCODED_VIDEOS, isLoading, isError } = {
-        data: HARDCODED_VIDEOS,       // Always use the hardcoded list
-        isLoading: false,             // Always report not loading
-        isError: false                // Always report no error
-    };
+    // 🚀 RE-ENABLED API CALL
+    const { 
+        data: videos = [], 
+        isLoading, 
+        isError 
+    } = useQuery({
+        queryKey: ['videos'],
+        // NOTE: This call is the one we suspect is failing (no /videos endpoint)
+        queryFn: () => getVideoStatus(), 
+        retry: 2 
+    });
     
-    // 
-    // --- The rest of the component logic remains the same, but now uses the hardcoded 'videos' array ---
-    // 
-
+    // --- Loading, Error, and Empty States ---
     if (isLoading) {
         return <div className="p-6 text-center">Loading Videos...</div>;
     }
@@ -35,6 +29,7 @@ function Workshop() {
             <div className="p-6 text-center text-red-600">
                 <h2 className="text-xl font-bold">Error Loading Videos</h2>
                 <p>Could not connect to the video service. Please check your network or API status.</p>
+                <p className="text-sm mt-2">The backend may not have a /videos list endpoint.</p>
             </div>
         );
     }
@@ -43,10 +38,10 @@ function Workshop() {
         return <div className="p-6 text-center">No videos found. Create one now!</div>;
     }
 
-    // --- Video List Display (Using the hardcoded data) ---
+    // --- Video List Display (Renders if the API call succeeds) ---
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Video Workshop (Test Mode Active)</h1>
+            <h1 className="text-3xl font-bold mb-6">Video Workshop</h1>
             <div className="space-y-4">
                 {videos.map((video) => (
                     <div key={video.id} className="p-4 border rounded-lg shadow-sm flex justify-between items-center">
