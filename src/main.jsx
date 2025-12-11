@@ -8,14 +8,14 @@ import {
 import './index.css'
 
 // --- General Pages ---
-import Home from '../pages/Home.jsx'
-import NotFound from '../pages/NotFound.jsx'
+import Home from './pages/Home.jsx' // <-- Reverted path
+import NotFound from './pages/NotFound.jsx' // <-- Reverted path
 
 // --- Workshop Pages ---
-import Workshop from '../pages/Workshop.jsx'
-import Templates from '../pages/Templates.jsx'
-import Template2 from '../pages/Template2.jsx'
-import MyVideos from '../pages/MyVideos.jsx' // <-- Correct path and new import
+import Workshop from './pages/Workshop.jsx' // <-- Reverted path
+import Templates from './pages/Templates.jsx' // <-- Reverted path
+import Template2 from './pages/Template2.jsx' // <-- Reverted path
+import MyVideos from './pages/MyVideos.jsx' // <-- Reverted path (and new import)
 
 // --- Main Router Definition ---
 const router = createBrowserRouter([
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     element: <Template2 />,
   },
   {
-    path: '/workshop/my-videos', // <-- New route
+    path: '/workshop/my-videos', 
     element: <MyVideos />,
   },
   {
