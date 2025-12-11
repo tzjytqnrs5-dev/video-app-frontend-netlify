@@ -1,75 +1,95 @@
-// src/pages/Workshop.jsx (Full Reversion)
-
 import React from 'react';
-import { useQuery } from '@tanstack/react-query'; // KEEP THIS CORRECT IMPORT
-import { getVideoStatus } from '../api/base44Client'; 
-// import { generateVideo } from '../api/base44Client'; // Keep commented if not used here
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Video as VideoIcon, Sparkles } from 'lucide-react';
+import { createPageUrl } from '../utils';
+// Removed: useQuery and MOCK_VIDEOS as they are moving to MyVideos.jsx
 
+export default function Workshop() {
+  const navigate = useNavigate();
+  
+  // Handlers for navigation
+  const handleTemplateClick = () => navigate(createPageUrl('Templates'));
+  const handleMagicGenerateClick = () => {
+    // Now redirects to the Templates page
+    navigate(createPageUrl('Templates')); 
+  };
+  const handleMyVideosClick = () => navigate(createPageUrl('MyVideos')); // <-- NEW HANDLER
 
-function Workshop() {
-    // 🚀 RE-ENABLED API CALL
-    const { 
-        data: videos = [], 
-        isLoading, 
-        isError 
-    } = useQuery({
-        queryKey: ['videos'],
-        // NOTE: This call is the one we suspect is failing (no /videos endpoint)
-        queryFn: () => getVideoStatus(), 
-        retry: 2 
-    });
-    
-    // --- Loading, Error, and Empty States ---
-    if (isLoading) {
-        return <div className="p-6 text-center">Loading Videos...</div>;
-    }
+  return (
+    <div className="min-h-screen bg-black text-white pb-20">
+      
+      {/* --- Header/Back Navigation --- */}
+      <div className="p-4 md:p-6 flex items-center gap-4 mb-10 border-b border-white/5 sticky top-0 bg-black/80 backdrop-blur-sm z-10">
+        <button 
+          onClick={() => navigate(createPageUrl('Home'))} 
+          className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5 text-white" />
+        </button>
+        <span className="font-bold text-2xl tracking-tight">Workshop</span>
+      </div>
+      
+      <div className="max-w-6xl mx-auto px-6 space-y-12">
+        
+        {/* --- All Action Tiles: Template, Magic Gen, and NEW My Videos --- */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Tile 1: Create from Template */}
+          <div 
+            onClick={handleTemplateClick} 
+            className="group relative h-48 md:h-56 bg-[#1c1c1e] border border-purple-500/30 rounded-3xl 
+                       flex flex-col justify-center p-6 cursor-pointer 
+                       hover:border-purple-500 transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
+            
+            <h2 className="relative z-10 text-3xl md:text-4xl font-extrabold tracking-tighter text-white">
+              Templates
+            </h2>
+            <p className="relative z-10 mt-2 text-white/60">
+              Start with a pre-designed video structure.
+            </p>
+          </div>
+          
+          {/* Tile 2: Magic Generate */}
+          <div 
+            onClick={handleMagicGenerateClick} 
+            className="group relative h-48 md:h-56 bg-[#1c1c1e] border border-blue-500/30 rounded-3xl 
+                       flex flex-col justify-center p-6 cursor-pointer 
+                       hover:border-blue-500 transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
+            
+            <Sparkles className="relative z-10 w-8 h-8 text-blue-400 mb-2" />
+            <h2 className="relative z-10 text-3xl md:text-4xl font-extrabold tracking-tighter text-white">
+              Magic Gen
+            </h2>
+            <p className="relative z-10 mt-2 text-white/60">
+              (Feature Placeholder) Click to view Templates.
+            </p>
+          </div>
 
-    if (isError) {
-        return (
-            <div className="p-6 text-center text-red-600">
-                <h2 className="text-xl font-bold">Error Loading Videos</h2>
-                <p>Could not connect to the video service. Please check your network or API status.</p>
-                <p className="text-sm mt-2">The backend may not have a /videos list endpoint.</p>
-            </div>
-        );
-    }
-
-    if (!videos || videos.length === 0) {
-        return <div className="p-6 text-center">No videos found. Create one now!</div>;
-    }
-
-    // --- Video List Display (Renders if the API call succeeds) ---
-    return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Video Workshop</h1>
-            <div className="space-y-4">
-                {videos.map((video) => (
-                    <div key={video.id} className="p-4 border rounded-lg shadow-sm flex justify-between items-center">
-                        <div>
-                            <p className="font-semibold text-lg">{video.title}</p>
-                            <span className={`text-sm font-medium ${
-                                video.status === 'COMPLETED' ? 'text-green-600' :
-                                video.status === 'PENDING' ? 'text-yellow-600' : 'text-red-600'
-                            }`}>
-                                Status: {video.status}
-                            </span>
-                        </div>
-                        {video.status === 'COMPLETED' && video.videoUrl && (
-                            <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" 
-                               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
-                                View
-                            </a>
-                        )}
-                        {video.status === 'PENDING' && (
-                            <button disabled className="px-4 py-2 bg-gray-300 text-gray-700 rounded cursor-not-allowed">
-                                Rendering...
-                            </button>
-                        )}
-                    </div>
-                ))}
-            </div>
+          {/* NEW Tile 3: My Videos */}
+          <div 
+            onClick={handleMyVideosClick} 
+            className="group relative h-48 md:h-56 bg-[#1c1c1e] border border-green-500/30 rounded-3xl 
+                       flex flex-col justify-center p-6 cursor-pointer 
+                       hover:border-green-500 transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
+            
+            <VideoIcon className="relative z-10 w-8 h-8 text-green-400 mb-2" />
+            <h2 className="relative z-10 text-3xl md:text-4xl font-extrabold tracking-tighter text-white">
+              My Videos
+            </h2>
+            <p className="relative z-10 mt-2 text-white/60">
+              View your generating and completed video library.
+            </p>
+          </div>
         </div>
-    );
+        
+        {/* Removed: Generating and Completed Videos Sections */}
+      </div>
+    </div>
+  );
 }
-
-export default Workshop;
