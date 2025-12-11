@@ -1,19 +1,53 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from '@/App.jsx'
-import '@/index.css'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from 'react-router-dom'
+import './index.css'
 
-// NEW IMPORTS: Required for TanStack Query
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; 
+// --- General Pages ---
+import Home from './pages/Home.jsx'
+import NotFound from './pages/NotFound.jsx'
 
-// NEW: Define a new QueryClient instance
-const queryClient = new QueryClient(); 
+// --- Workshop Pages ---
+import Workshop from './pages/Workshop.jsx'
+import Templates from './pages/Templates.jsx'
+import Template2 from './pages/Template2.jsx'
+import MyVideos from './pages/MyVideos.jsx' // <-- 1. NEW IMPORT
+
+// --- Main Router Definition ---
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    errorElement: <NotFound />,
+  },
+  {
+    path: '/workshop',
+    element: <Workshop />,
+  },
+  {
+    path: '/workshop/templates',
+    element: <Templates />,
+  },
+  {
+    path: '/workshop/templates/:templateId',
+    element: <Template2 />,
+  },
+  {
+    path: '/workshop/my-videos', // <-- 2. NEW ROUTE
+    element: <MyVideos />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/404" replace />,
+  },
+])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        {/* NEW WRAPPER: Wrapping the App with QueryClientProvider */}
-        <QueryClientProvider client={queryClient}>
-            <App />
-        </QueryClientProvider>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>,
 )
