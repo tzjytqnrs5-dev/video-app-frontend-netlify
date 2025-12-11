@@ -62,7 +62,7 @@ export default function Workshop() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-transparent opacity-50 transition-opacity group-hover:opacity-100" />
             
             <h2 className="relative z-10 text-3xl md:text-4xl font-extrabold tracking-tighter text-white">
-              Random!
+              Random
             </h2>
             <p className="relative z-10 mt-2 text-white/60">
               I'm feeling lucky! 
